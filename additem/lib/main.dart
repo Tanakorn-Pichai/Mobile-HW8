@@ -32,14 +32,22 @@ class data {
   late int id;
   late String name;
   late DateTime t;
-  data(this.id, this.name, this.t);
+  late String imagePath;
+  data(this.id, this.name, this.t, this.imagePath);
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final TextEditingController controller = TextEditingController();
   String txt = "N/A";
   List<data> myList = <data>[];
   int img = 0;
-  var list = ['one', 'two', 'three', 'four'];
+  var images = [
+    'assets/images/ig.png',
+    'assets/images/line.png',
+    'assets/images/marvel.jpg',
+    'assets/images/avengers.png',
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -103,7 +111,22 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ],
             ),
-            const TextField(),
+            Padding(
+              padding: const EdgeInsets.all(12),
+              child: TextField(
+                controller: controller,
+                decoration: InputDecoration(
+                  hintText: "Enter title name...",
+                  prefixIcon: const Icon(Icons.edit),
+                  filled: true,
+                  fillColor: Colors.grey.shade200,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+              ),
+            ),
             ElevatedButton(
               onPressed: () {
                 setState(() {
@@ -111,10 +134,12 @@ class _MyHomePageState extends State<MyHomePage> {
                   myList.add(
                     data(
                       myList.length + 1,
-                      'Title Text ${myList.length + 1}',
+                      controller.text,
                       DateTime.now(),
+                      images[img - 1],
                     ),
                   );
+                  controller.clear();
                 });
               },
               child: const Text("Add Item"),
@@ -136,11 +161,13 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                       color: Colors.primaries[index % Colors.primaries.length],
                       child: ListTile(
-                        leading: const CircleAvatar(
+                        leading: CircleAvatar(
                           radius: 30,
-                          backgroundImage: AssetImage('assets/images/ig.png'),
+                          backgroundImage: AssetImage(
+                            (myList[index].imagePath),
+                          ),
                         ),
-                        title: Text('Item ${myList[index].id}'),
+                        title: Text(myList[index].name),
                         subtitle: Text(myList[index].t.toString()),
                         trailing: const Icon(Icons.delete_rounded),
                         onTap: () {
